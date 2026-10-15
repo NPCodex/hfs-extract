@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.3.0</Version>
+    <RepositoryUrl>https://github.com/NPCodex/hfs-extract</RepositoryUrl>
+    <Product>HFSExtract</Product>
+    <Description>Vindictus HFS v2/v4 archive extractor</Description>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>
