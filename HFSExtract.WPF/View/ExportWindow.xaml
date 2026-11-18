@@ -1,0 +1,73 @@
+<Window x:Class="HFSExtract.WPF.View.ExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HFSExtract.WPF.View"
+        xmlns:vm="clr-namespace:HFSExtract.WPF.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:ExportViewModel}"
+        x:Name="exportWindow" Title="Export" Height="450" Width="600" Icon="/Resources/heroes.ico">
+
+    <Window.Resources>
+        <!--根据状态设置Status颜色-->
+        <Style x:Key="StatusBlock" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Success">
+                    <Setter Property="Foreground" Value="Green" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Skip">
+                    <Setter Property="Foreground" Value="Blue" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Failure">
+                    <Setter Property="Foreground" Value="Red" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 为所有 DataGridCell 统一添加右键复制菜单 -->
+        <Style x:Key="GridCell" TargetType="DataGridCell">
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu>
+                        <!-- 直接调用 WPF 内置 Copy 命令，自动复制当前选中单元格的文本 -->
+                        <MenuItem Header="复制" Command="ApplicationCommands.Copy" />
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <!-- 显示hfs文件提取信息 -->
+            <DataGrid Grid.Row="0" ItemsSource="{Binding Datas}" d:ItemsSource="{d:SampleData}" CellStyle="{StaticResource GridCell}" SelectionUnit="CellOrRowHeader" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,0,0,5">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" MinWidth="60" Width="Auto"/>
+                    <DataGridTextColumn Header="FileName" Binding="{Binding FileName}" MinWidth="60" Width="Auto"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" ElementStyle="{StaticResource StatusBlock}" MinWidth="60" Width="Auto"/>
+                    <DataGridTextColumn Header="Error" Binding="{Binding Error}" MinWidth="60" Width="Auto"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Border Grid.Row="1" Padding="5" BorderBrush="#FF969696" BorderThickness="1,1,1,1">
+                <local:ProgressView
+                    ElapsedTime="{Binding ElapsedTime}"
+                    RemainingTime="{Binding RemainingTime}"
+                    ProgressText="{Binding ProgressText}"
+                    ProgressValue="{Binding ProgressValue}"/>
+            </Border>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                <Button Content="打开目录" CommandParameter="{x:Reference Name=exportWindow}" Command="{Binding OpenOutputCommand}" Width="100" Margin="0,0,10,0"/>
+                <Button Content="错误报告" CommandParameter="{x:Reference Name=exportWindow}" Command="{Binding SaveErrorsCommand}" Width="100" Margin="0,0,10,0"/>
+                <Button Content="保存记录" CommandParameter="{x:Reference Name=exportWindow}" Command="{Binding SaveHistoryCommand}" Width="100" Margin="0,0,10,0"/>
+                <Button Content="取消" CommandParameter="{x:Reference Name=exportWindow}" Command="{Binding CloseWindowCommand}" Width="100"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

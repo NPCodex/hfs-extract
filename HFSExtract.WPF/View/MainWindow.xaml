@@ -1,0 +1,58 @@
+<Window x:Class="HFSExtract.WPF.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HFSExtract.WPF.View"
+        xmlns:vm="clr-namespace:HFSExtract.WPF.ViewModel"
+        mc:Ignorable="d"
+        x:Name="mainWindow" Title="HFSExtract" Height="450" Width="600" Icon="/Resources/heroes.ico">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    
+    <Border Padding="10" Background="#eeee">
+        <StackPanel>
+            <!--路径设置-->
+            <local:PathView LabelText ="HFS files path:" PathText="{Binding InputPath}"/>
+            <local:PathView LabelText ="Output path:" PathText="{Binding OutputPath}"/>
+            <!--HFS导出设置-->
+            <GroupBox Header="HFS"  Margin="0,10,0,0" Padding="5, 10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+                    <CheckBox Content="Skip History" IsChecked="{Binding SkipHistory}" ToolTip="跳过历史记录中已完成的文件" VerticalAlignment="Center" Margin="5, 0"/>
+                    <TextBlock Text="Max Threads" VerticalAlignment="Center" Margin="20,0,5,0"/>
+                    <ComboBox ItemsSource="{Binding ThreadOptions}" SelectedItem="{Binding ThreadCount}" ToolTip="最大并行任务数量" MinWidth="60">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <!-- 默认显示数字本身 -->
+                                            <Setter Property="Text" Value="{Binding}" />
+                                            <Style.Triggers>
+                                                <!-- 当值为 0 时，替换为 Auto -->
+                                                <DataTrigger Binding="{Binding}" Value="0">
+                                                    <Setter Property="Text" Value="Auto" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </GroupBox>
+            <!--Asset导出设置-->
+            <GroupBox Header="Asset" ToolTip="单个资源项导出时的选项" Margin="0,10,0,10" Padding="5, 10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+                    <CheckBox Content="Overwrite" ToolTip="值为false时不覆盖已有输出文件并报告失败" IsChecked="{Binding Overwrite}" Margin="5, 0"/>
+                </StackPanel>
+            </GroupBox>
+
+            <Button Content="Export" CommandParameter="{x:Reference Name=mainWindow}" Command="{Binding ExportCommand}" Margin="0,10"/>
+
+
+        </StackPanel>
+    </Border>
+</Window>

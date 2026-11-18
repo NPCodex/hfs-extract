@@ -1,0 +1,21 @@
+<UserControl x:Class="HFSExtract.WPF.View.PathView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HFSExtract.WPF.View"
+             mc:Ignorable="d" 
+             x:Name="root"
+             d:DesignHeight="450" d:DesignWidth="600">
+    <StackPanel>
+        <TextBlock Text="{Binding LabelText, ElementName=root}" Margin="0,0,0,5"/>
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="PathTextBox" Grid.Column="0" Text="{Binding PathText, ElementName=root, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"/>
+            <Button Click="Button_Click" Grid.Column="1" Content="..."/>
+        </Grid>
+    </StackPanel>
+</UserControl>
