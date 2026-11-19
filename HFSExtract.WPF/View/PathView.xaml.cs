@@ -42,7 +42,7 @@ namespace HFSExtract.WPF.View
             var dialog = new OpenFolderDialog
             {
                 Title = "请选择文件夹",
-                InitialDirectory = PathText // 如果已有路径，默认定位到该目录
+                InitialDirectory = System.IO.Directory.Exists(PathText) ? PathText : null // 如果已有路径，默认定位到该目录
             };
 
             if (dialog.ShowDialog() == true)

@@ -23,6 +23,7 @@ public partial class ExportViewModel(HFSExtractor extractor) : ObservableObject
     public partial string ProgressText { get; private set; } = "99/99";
     [ObservableProperty]
     public partial double ProgressValue { get; private set; } = 0;
+    public bool TaskIsCompleted => extractTask is not null && extractTask.IsCompleted;
     private Task? extractTask;
     private readonly CancellationTokenSource extractCTS = new();
     private readonly CancellationTokenSource elapsedTimeCTS = new();
@@ -112,7 +113,7 @@ public partial class ExportViewModel(HFSExtractor extractor) : ObservableObject
         ProgressValue = current > 0 && Datas.Count > 0 ? ((double)current / Datas.Count) * 100 : 0;
     }
 
-    [RelayCommand(CanExecute = nameof(ExtractIsCompleted))]
+    [RelayCommand(CanExecute = nameof(TaskIsCompleted))]
     private void OpenOutput(object? obj)
     {
         if (!Directory.Exists(Extractor.OutputPath))
@@ -127,7 +128,7 @@ public partial class ExportViewModel(HFSExtractor extractor) : ObservableObject
         });
     }
 
-    [RelayCommand(CanExecute = nameof(ExtractIsCompleted))]
+    [RelayCommand(CanExecute = nameof(TaskIsCompleted))]
     private async Task SaveErrors(object? obj)
     {
         var wnd = (obj as ExportWindow)!;
@@ -145,7 +146,7 @@ public partial class ExportViewModel(HFSExtractor extractor) : ObservableObject
         Utils.OpenByNotepad(path);
     }
 
-    [RelayCommand(CanExecute = nameof(ExtractIsCompleted))]
+    [RelayCommand(CanExecute = nameof(TaskIsCompleted))]
     private async Task SaveHistory(object? obj)
     {
         var wnd = (obj as ExportWindow)!;
@@ -167,22 +168,6 @@ public partial class ExportViewModel(HFSExtractor extractor) : ObservableObject
         Utils.OpenByNotepad(path);
     }
 
-    private bool ExtractIsCompleted()
-    {
-        return extractTask is not null && extractTask.IsCompleted;
-    }
-
     [RelayCommand]
-    private void CloseWindow(object? obj)
-    {
-        var wnd = (obj as ExportWindow)!;
-        if (ExtractIsCompleted())
-        {
-            wnd.Close();
-            return;
-        }
-
-        var result = MessageBox.Show(wnd, $"停止当前任务", "确认操作", MessageBoxButton.YesNo, MessageBoxImage.Question);
-        if (result == MessageBoxResult.Yes) wnd.Close();
-    }
+    private static void CloseWindow(object? obj) => (obj as ExportWindow)!.Close();
 }
